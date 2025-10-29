@@ -1,7 +1,8 @@
 import mongoose from "mongoose"
 import dotenv from "dotenv"
 import express from "express"
-import UserRoute from "./src/routes/user.route.js"
+import UserRoute from "./src/routes/auth.route.js"
+import ProductRoute from "./src/routes/product.route.js"
 
 dotenv.config()
 const app =express()
@@ -11,6 +12,7 @@ res.send("asdasdsada")
 })
 
 app.use('/api/auth',UserRoute)
+app.use('/api/products',ProductRoute)
 
 app.listen(process.env.PORT,()=>{
     

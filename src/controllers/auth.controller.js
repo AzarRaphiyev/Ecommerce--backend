@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import express from "express";
 import User from "../models/user.model.js";
+import { generateAccessToken, generateRefreshToken } from "../../utils/tokenGenerator.js";
 
 export const login = async (req, res) => {
   try {
@@ -41,10 +42,10 @@ export const register = async (req, res) => {
     } = req.body;
     const user = await User.findOne({ email });
     if (user) {
-      res.status(400).json({ message: "user already exists" });
+      return res.status(400).json({ message: "user already exists" });
     }
     if (!isStore) {
-      const newUser = new User({ firstname, lastname, email,phone, password });
+      const newUser = new User({ firstname, lastname, email, phone, password });
     } else {
       if ((isStore && !storeName) || !voen || !storeDescription) {
         return res.status(400).json({ message: "please fill all fields" });
@@ -61,13 +62,13 @@ export const register = async (req, res) => {
         storeDescription,
       });
     }
-    const accessToken = generateAccessToken(newUser, res);
-    const refreshToken = generateRefreshToken(newUser, res);
-    newUser.refreshToken = refreshToken;
+    const accessToken = generateAccessToken(user, res)
+    const refreshToken = generateRefreshToken(user, res)
+    newUser.refreshToken = refreshToken
     await newUser.save();
 
-    res.status(200).json({ accessToken, refreshToken });
+    return res.status(200).json({ accessToken, refreshToken });
   } catch {
-    res.status(500).json({ message: "server error" });
+    return res.status(500).json({ message: "server error" });
   }
 };

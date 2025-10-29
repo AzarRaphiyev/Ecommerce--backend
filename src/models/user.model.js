@@ -41,12 +41,15 @@ const userSchema = new mongoose.Schema({
   },
   storeName: {
     type: String,
+    default: null,
   },
   voen: {
     type: String,
+    default: null,
   },
   storeDescription: {
     type: String,
+    default: null,
   },
   rating: {
     type: Number,
