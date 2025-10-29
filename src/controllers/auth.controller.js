@@ -40,17 +40,21 @@ export const register = async (req, res) => {
       voen,
       storeDescription,
     } = req.body;
+
     const user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({ message: "user already exists" });
     }
+
+    let newUser;
+
     if (!isStore) {
-      const newUser = new User({ firstname, lastname, email, phone, password });
+      newUser = new User({ firstname, lastname, email, phone, password });
     } else {
-      if ((isStore && !storeName) || !voen || !storeDescription) {
+      if (!storeName || !voen || !storeDescription) {
         return res.status(400).json({ message: "please fill all fields" });
       }
-      const newUser = new User({
+      newUser = new User({
         firstname,
         lastname,
         email,
@@ -62,13 +66,18 @@ export const register = async (req, res) => {
         storeDescription,
       });
     }
-    const accessToken = generateAccessToken(user, res)
-    const refreshToken = generateRefreshToken(user, res)
-    newUser.refreshToken = refreshToken
+
     await newUser.save();
 
-    return res.status(200).json({ accessToken, refreshToken });
-  } catch {
-    return res.status(500).json({ message: "server error" });
+    const accessToken = generateAccessToken(newUser, res);
+    const refreshToken = generateRefreshToken(newUser, res);
+    newUser.refreshToken = refreshToken;
+    await newUser.save();
+    res.status(200).json({ accessToken, refreshToken });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "server error" });
   }
 };
+
