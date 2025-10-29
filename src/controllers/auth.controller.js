@@ -2,7 +2,7 @@ import jwt from "jsonwebtoken";
 import express from "express";
 import User from "../models/user.model.js";
 
-export const loginUser = async (req, res) => {
+export const login = async (req, res) => {
   try {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
@@ -26,7 +26,7 @@ export const loginUser = async (req, res) => {
   }
 };
 
-export const registerUser = async (req, res) => {
+export const register = async (req, res) => {
   try {
     const {
       firstname,
@@ -44,7 +44,7 @@ export const registerUser = async (req, res) => {
       res.status(400).json({ message: "user already exists" });
     }
     if (!isStore) {
-      const newUser = new User({ firstname, lastname, email, password });
+      const newUser = new User({ firstname, lastname, email,phone, password });
     } else {
       if ((isStore && !storeName) || !voen || !storeDescription) {
         return res.status(400).json({ message: "please fill all fields" });
@@ -53,6 +53,7 @@ export const registerUser = async (req, res) => {
         firstname,
         lastname,
         email,
+        phone,
         password,
         isStore,
         storeName,

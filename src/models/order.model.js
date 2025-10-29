@@ -9,18 +9,15 @@ const orderSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  totalPrice:{
-    type: Number,
-    required: true,
+  orderedProducts:{
+    type:mongoose.Schema.ObjectId,
+    ref:"cart",
+    required:true
   },
-//   orderItems:[{
-
-//   }],
-  user:{
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
-  }
-})   
+  paymentId:{
+    type:String,
+    required:true
+  },
+},{timestamps:true})   
 
 export default order=mongoose.model("Order", orderSchema);
