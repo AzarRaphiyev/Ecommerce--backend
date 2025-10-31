@@ -8,11 +8,11 @@ export const login = async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) {
-      res.status(400).json({ message: "user not found" });
+      return res.status(400).json({ message: "user not found" });
     }
-    const isPasswordValid = User.matchPassword(password);
+    const isPasswordValid = await user.matchPassword(password);
     if (!isPasswordValid) {
-      res.status(400).json({ message: "invalid password" });
+      return res.status(400).json({ message: "invalid password" });
     }
 
     const accessToken = generateAccessToken(user, res);
@@ -26,6 +26,8 @@ export const login = async (req, res) => {
     res.status(500).json({ message: "server error" });
   }
 };
+
+
 
 export const register = async (req, res) => {
   try {
